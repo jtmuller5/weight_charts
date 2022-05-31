@@ -3,20 +3,23 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:weight_charts/charts/chart_holder.dart';
 
+import '../models/date_range.dart';
 import '../models/measurement/measurement.dart';
 
 class CaloriesConsumedChart extends StatelessWidget {
   final double sideLength;
-  final Pet pet;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
+  final Color dotColor;
+  final DateRange selectedDateRange;
 
   const CaloriesConsumedChart({
     Key? key,
     required this.sideLength,
-    required this.pet,
     required this.stream,
     required this.color,
+    required this.dotColor,
+    required this.selectedDateRange,
   }) : super(key: key);
 
   @override
@@ -30,7 +33,7 @@ class CaloriesConsumedChart extends StatelessWidget {
               List<Measurement> allMeasurements = snapshot.data?.docs.map((e) => Measurement.fromJson(e.data())).toList() ?? [];
               List<Measurement> rawMeasurements = allMeasurements
                   .where((measurement) =>
-                      (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(model.selectedDateRange.duration))))
+                      (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(selectedDateRange.duration))))
                   .toList();
 
               // if (rawMeasurements.isNotEmpty) {
@@ -59,7 +62,7 @@ class CaloriesConsumedChart extends StatelessWidget {
                 child: LineChart(
                   LineChartData(
                       minY: 0,
-                      minX: -model.selectedDateRange.duration.inDays.toDouble(),
+                      minX: -selectedDateRange.duration.inDays.toDouble(),
                       maxY: mostCalories + 5,
                       maxX: 0,
                       lineTouchData: LineTouchData(),
@@ -97,7 +100,7 @@ class CaloriesConsumedChart extends StatelessWidget {
                               return const TextStyle(fontSize: 10);
                             },
                             rotateAngle: 0,
-                            interval: model.selectedDateRange.verticalInterval,
+                            interval: selectedDateRange.verticalInterval,
                             getTitles: (value) {
                               return MaterialLocalizations.of(context).formatShortMonthDay(DateTime.now().add(Duration(days: value.toInt())));
                             },
@@ -105,7 +108,7 @@ class CaloriesConsumedChart extends StatelessWidget {
                       gridData: FlGridData(
                         drawHorizontalLine: true,
                         horizontalInterval: (mostCalories / 6) == 0 ? 1 : (mostCalories / 6),
-                        verticalInterval: model.selectedDateRange.verticalInterval,
+                        verticalInterval: selectedDateRange.verticalInterval,
                         drawVerticalLine: true,
                         getDrawingHorizontalLine: (value) {
                           return FlLine(strokeWidth: .2);
@@ -118,19 +121,19 @@ class CaloriesConsumedChart extends StatelessWidget {
                         },
                       ),
                       lineBarsData: [
-                        getReferenceLine(startX: -model.selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.transparent, y: 0),
+                        getReferenceLine(startX: -selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.transparent, y: 0),
                         if (spots.length > 1)
                           LineChartBarData(
                               spots: spots,
                               barWidth: 1,
-                              colors: [HPCColors.greenApple],
+                              colors: [dotColor],
                               dotData: FlDotData(
                                 getDotPainter: (spot, value, barData, index) {
                                   return FlDotCirclePainter(
-                                    color: HPCColors.greenApple,
+                                    color: dotColor,
                                     strokeWidth: 0,
                                     radius: 3,
-                                    strokeColor: HPCColors.greenApple,
+                                    strokeColor: dotColor,
                                   );
                                 },
                               )),

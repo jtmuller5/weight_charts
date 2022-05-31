@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:weight_charts/models/measurement/json_utilities.dart';
+import 'package:weight_charts/models/json_utilities.dart';
 
 
 part 'measurement.g.dart';

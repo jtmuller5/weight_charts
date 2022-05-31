@@ -2,21 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:weight_charts/models/date_range.dart';
+import 'package:weight_charts/models/json_utilities.dart';
 import 'package:weight_charts/models/measurement/measurement.dart';
 
 import 'chart_holder.dart';
 
 class AverageWeeklyWeightLossChart extends StatelessWidget {
   final double sideLength;
-  final Pet pet;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
+  final Color dotColor;
+  final double currentWeight;
+  final DateRange selectedDateRange;
 
   const AverageWeeklyWeightLossChart({
     Key? key,
     required this.sideLength,
-    required this.pet,
-    required this.stream, required this.color,
+    required this.stream,
+    required this.color,
+    required this.dotColor,
+    required this.selectedDateRange,
+    required this.currentWeight,
   }) : super(key: key);
 
   @override
@@ -31,7 +38,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
               List<Measurement> allMeasurements = snapshot.data?.docs.map((e) => Measurement.fromJson(e.data())).toList() ?? [];
               List<Measurement> rawMeasurements = allMeasurements
                   .where((measurement) =>
-                      (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(model.selectedDateRange.duration))))
+                      (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(selectedDateRange.duration))))
                   .toList();
 
               // if (rawMeasurements.isNotEmpty) {
@@ -39,30 +46,28 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
               List<DateTime> dates = [];
               Map<DateTime, Measurement?> measurements = {};
 
-              int totalDaysBeingMeasured = model.selectedDateRange.duration.inDays * 2;
+              int totalDaysBeingMeasured = selectedDateRange.duration.inDays * 2;
 
               /// 0 - Create list of all visible days
               for (int i = 0; i < totalDaysBeingMeasured; i++) {
-                measurements.addEntries(List.generate(
-                    totalDaysBeingMeasured,
-                    (index) =>
-                        MapEntry(timeService.getDateWithoutTime(DateTime.now().subtract(Duration(days: totalDaysBeingMeasured - index))), null)));
+                measurements.addEntries(List.generate(totalDaysBeingMeasured,
+                    (index) => MapEntry(getDateWithoutTime(DateTime.now().subtract(Duration(days: totalDaysBeingMeasured - index))), null)));
               }
 
               for (Measurement measurement in (rawMeasurements)) {
                 /// 1 - Add all weight measurements to map
                 if (measurement.weight != null) {
-                  measurements[timeService.getDateWithoutTime(measurement.dateTime!)] = measurement;
+                  measurements[getDateWithoutTime(measurement.dateTime!)] = measurement;
 
-                  DateTime dateWithoutTime = timeService.getDateWithoutTime(measurement.dateTime!);
+                  DateTime dateWithoutTime = getDateWithoutTime(measurement.dateTime!);
                   if (!dates.contains(dateWithoutTime)) {
-                    dates.add(timeService.getDateWithoutTime(measurement.dateTime!));
+                    dates.add(getDateWithoutTime(measurement.dateTime!));
                   }
                 }
               }
 
               /// 2 - Calculate AWWL for each day
-              double rollingWeight = pet.currentWeight!;
+              double rollingWeight = currentWeight!;
               List<Measurement?> reversedMeasurements = measurements.entries.toList().reversed.map((e) => e.value).toList();
 
               /// 2.a - cycle through all days in reverse order (current -> past)
@@ -122,7 +127,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
                 child: LineChart(
                   LineChartData(
                       minY: -2,
-                      minX: -model.selectedDateRange.duration.inDays.toDouble(),
+                      minX: -selectedDateRange.duration.inDays.toDouble(),
                       maxY: 4,
                       maxX: 0,
                       lineTouchData: LineTouchData(
@@ -132,7 +137,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
                                 getDotPainter: (p0, p1, p2, p3) {
                                   return FlDotCirclePainter(
                                     radius: 5,
-                                    color: colorService.getDotColor(p0.y),
+                                    color: getDotColor(p0.y),
                                   );
                                 },
                               ))
@@ -183,13 +188,13 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
                               return const TextStyle(fontSize: 10);
                             },
                             rotateAngle: 0,
-                            interval: model.selectedDateRange.verticalInterval,
+                            interval: selectedDateRange.verticalInterval,
                             getTitles: (value) {
-                              return timeService.getLocalization(context).formatShortMonthDay(DateTime.now().add(Duration(days: value.toInt())));
+                              return MaterialLocalizations.of(context).formatShortMonthDay(DateTime.now().add(Duration(days: value.toInt())));
                             },
                           )),
                       gridData: FlGridData(
-                        verticalInterval: model.selectedDateRange.verticalInterval,
+                        verticalInterval: selectedDateRange.verticalInterval,
                         drawVerticalLine: true,
                         getDrawingHorizontalLine: (value) {
                           return FlLine(strokeWidth: .2);
@@ -203,27 +208,27 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
                       ),
                       lineBarsData: [
                         getReferenceLine(
-                          startX: -model.selectedDateRange.duration.inDays.toDouble(),
+                          startX: -selectedDateRange.duration.inDays.toDouble(),
                           endX: 0,
                           color: Colors.brown,
                           y: 3,
                         ),
                         getReferenceLine(
-                          startX: -model.selectedDateRange.duration.inDays.toDouble(),
+                          startX: -selectedDateRange.duration.inDays.toDouble(),
                           endX: 0,
                           color: Colors.red,
                           y: 2,
                         ),
                         getReferenceLine(
-                          startX: -model.selectedDateRange.duration.inDays.toDouble(),
+                          startX: -selectedDateRange.duration.inDays.toDouble(),
                           endX: 0,
                           color: Colors.orange,
                           y: 1.5,
                         ),
-                        getReferenceLine(startX: -model.selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.green, y: 1),
-                        getReferenceLine(startX: -model.selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.orange, y: .5),
+                        getReferenceLine(startX: -selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.green, y: 1),
+                        getReferenceLine(startX: -selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.orange, y: .5),
                         getReferenceLine(
-                          startX: -model.selectedDateRange.duration.inDays.toDouble(),
+                          startX: -selectedDateRange.duration.inDays.toDouble(),
                           endX: 0,
                           color: Colors.yellow,
                           y: 0,
@@ -235,10 +240,10 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
                           dotData: FlDotData(
                             getDotPainter: (spot, value, barData, index) {
                               return FlDotCirclePainter(
-                                color: colorService.getDotColor(spot.y),
+                                color: getDotColor(spot.y),
                                 strokeWidth: 0,
                                 radius: 3,
-                                strokeColor: colorService.getDotColor(spot.y),
+                                strokeColor: getDotColor(spot.y),
                               );
                             },
                           ),
@@ -252,28 +257,9 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
           }),
-      sideLength: sideLength, color: color,
-      onExpand: (title,chart){
-
-      },
+      sideLength: sideLength,
+      color: color,
+      onExpand: (title, chart) {},
     );
   }
-}
-
-LineChartBarData getReferenceLine({
-  required double startX,
-  required double endX,
-  required Color color,
-  required double y,
-}) {
-  return LineChartBarData(
-    spots: [
-      FlSpot(startX, y),
-      FlSpot(endX, y),
-    ],
-    barWidth: 1,
-    dashArray: [10, 4],
-    colors: [color],
-    dotData: FlDotData(show: false),
-  );
 }

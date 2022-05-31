@@ -2,22 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:weight_charts/charts/chart_holder.dart';
+import 'package:weight_charts/models/date_range.dart';
+import 'package:weight_charts/models/json_utilities.dart';
 import 'package:weight_charts/models/measurement/measurement.dart';
 
 class WeightTrendChart extends StatelessWidget {
   final double sideLength;
-  final Pet pet;
+  final double? targetWeight;
   final bool metric;
   final Color color;
+  final Color dotColor;
+  final DateRange selectedDateRange;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
 
   const WeightTrendChart({
     Key? key,
     required this.sideLength,
-    required this.pet,
+    required this.targetWeight,
     required this.stream,
     required this.metric,
     required this.color,
+    required this.selectedDateRange,
+    required this.dotColor,
   }) : super(key: key);
 
   @override
@@ -32,7 +38,7 @@ class WeightTrendChart extends StatelessWidget {
               List<Measurement> allMeasurements = snapshot.data?.docs.map((e) => Measurement.fromJson(e.data())).toList() ?? [];
               List<Measurement> rawMeasurements = allMeasurements
                   .where((measurement) =>
-                      (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(model.selectedDateRange.duration))))
+                      (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(selectedDateRange.duration))))
                   .toList();
 
               // if (rawMeasurements.isNotEmpty) {
@@ -53,7 +59,7 @@ class WeightTrendChart extends StatelessWidget {
 
                   DateTime dateWithoutTime = DateTime(measurement.dateTime!.year, measurement.dateTime!.month, measurement.dateTime!.day);
                   if (!dates.contains(dateWithoutTime)) {
-                    dates.add( DateTime(measurement.dateTime!.year, measurement.dateTime!.month, measurement.dateTime!.day));
+                    dates.add(DateTime(measurement.dateTime!.year, measurement.dateTime!.month, measurement.dateTime!.day));
                   }
 
                   if (weight > (largestWeight ?? 0)) largestWeight = weight;
@@ -65,13 +71,13 @@ class WeightTrendChart extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 24.0),
                 child: LineChart(
                   LineChartData(
-                      minY: (pet.targetWeight != null && conversionService.getWeightForDisplay(pet.targetWeight!)! < (smallestWeight ?? 5 - 5))
-                          ? conversionService.getWeightForDisplay(pet.targetWeight)! - 3
+                      minY: (targetWeight != null && getWeightForDisplay(targetWeight!)! < (smallestWeight ?? 5 - 5))
+                          ? getWeightForDisplay(targetWeight)! - 3
                           : smallestWeight ?? 5 - 5,
-                      minX: -model.selectedDateRange.duration.inDays.toDouble(),
+                      minX: -selectedDateRange.duration.inDays.toDouble(),
                       maxX: 0,
-                      maxY: (pet.targetWeight != null && conversionService.getWeightForDisplay(pet.targetWeight!)! > (largestWeight ?? 0 + 5))
-                          ? conversionService.getWeightForDisplay(pet.targetWeight)! + 3
+                      maxY: (targetWeight != null && getWeightForDisplay(targetWeight!)! > (largestWeight ?? 0 + 5))
+                          ? getWeightForDisplay(targetWeight)! + 3
                           : (largestWeight ?? 0) + 3,
                       lineTouchData: LineTouchData(),
                       borderData: FlBorderData(
@@ -108,15 +114,15 @@ class WeightTrendChart extends StatelessWidget {
                               return const TextStyle(fontSize: 10);
                             },
                             rotateAngle: 0,
-                            interval: model.selectedDateRange.verticalInterval,
+                            interval: selectedDateRange.verticalInterval,
                             getTitles: (value) {
-                              return timeService.getLocalization(context).formatShortMonthDay(DateTime.now().add(Duration(days: value.toInt())));
+                              return MaterialLocalizations.of(context).formatShortMonthDay(DateTime.now().add(Duration(days: value.toInt())));
                             },
                           )),
                       gridData: FlGridData(
                         drawHorizontalLine: true,
                         horizontalInterval: 1,
-                        verticalInterval: model.selectedDateRange.verticalInterval,
+                        verticalInterval: selectedDateRange.verticalInterval,
                         drawVerticalLine: true,
                         getDrawingHorizontalLine: (value) {
                           return FlLine(strokeWidth: .2);
@@ -129,7 +135,7 @@ class WeightTrendChart extends StatelessWidget {
                         },
                       ),
                       lineBarsData: [
-                        getReferenceLine(startX: -model.selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.transparent, y: 1),
+                        getReferenceLine(startX: -selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.transparent, y: 1),
                         if (spots.isNotEmpty)
                           LineChartBarData(
                               spots: spots,
@@ -138,18 +144,18 @@ class WeightTrendChart extends StatelessWidget {
                               dotData: FlDotData(
                                 getDotPainter: (spot, value, barData, index) {
                                   return FlDotCirclePainter(
-                                    color: HPCColors.watermelon,
+                                    color: dotColor,
                                     strokeWidth: 0,
                                     radius: 4,
-                                    strokeColor: HPCColors.greenApple,
+                                    strokeColor: dotColor,
                                   );
                                 },
                               )),
-                        if (pet.targetWeight != null)
+                        if (targetWeight != null)
                           LineChartBarData(
                             spots: [
-                              FlSpot(-model.selectedDateRange.duration.inDays.toDouble(), conversionService.getWeightForDisplay(pet.targetWeight!)!),
-                              FlSpot(0, conversionService.getWeightForDisplay(pet.targetWeight!)!),
+                              FlSpot(-selectedDateRange.duration.inDays.toDouble(), getWeightForDisplay(targetWeight!)!),
+                              FlSpot(0, getWeightForDisplay(targetWeight!)!),
                             ],
                             barWidth: 2,
                             dashArray: [10, 4],

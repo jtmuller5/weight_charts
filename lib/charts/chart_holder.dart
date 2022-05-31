@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class ChartHolder extends StatelessWidget {
@@ -74,4 +75,23 @@ class ChartHolder extends StatelessWidget {
       ),
     );
   }
+}
+
+
+LineChartBarData getReferenceLine({
+  required double startX,
+  required double endX,
+  required Color color,
+  required double y,
+}) {
+  return LineChartBarData(
+    spots: [
+      FlSpot(startX, y),
+      FlSpot(endX, y),
+    ],
+    barWidth: 1,
+    dashArray: [10, 4],
+    colors: [color],
+    dotData: FlDotData(show: false),
+  );
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:weight_charts/charts/chart_holder.dart';
+import 'package:weight_charts/models/date_range.dart';
 
 import '../models/measurement/measurement.dart';
 
@@ -9,12 +10,14 @@ class FoodEatenChart extends StatelessWidget{
   final double sideLength;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
+  final Color dotColor;
+  final DateRange selectedDateRange;
 
   const FoodEatenChart({
     Key? key,
     required this.sideLength,
     required this.stream,
-    required this.color,
+    required this.color, required this.dotColor, required this.selectedDateRange,
   }) : super(key: key);
 
   @override
@@ -32,12 +35,12 @@ class FoodEatenChart extends StatelessWidget{
                 List<Measurement> allMeasurements = snapshot.data?.docs.map((e) => Measurement.fromJson(e.data())).toList() ?? [];
                 List<Measurement> rawMeasurements = allMeasurements
                     .where((measurement) =>
-                        (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(model.selectedDateRange.duration))))
+                        (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(selectedDateRange.duration))))
                     .toList();
                 //if (rawMeasurements.isNotEmpty) {
                 Map<int, BarChartGroupData> bars = {
                   for (var element in List.generate(
-                    model.selectedDateRange.duration.inDays,
+                    selectedDateRange.duration.inDays,
                     (index) => index,
                   ))
                     element: BarChartGroupData(
@@ -60,8 +63,8 @@ class FoodEatenChart extends StatelessWidget{
                     double eaten = (measurement.offered! - measurement.notEaten!) / (metric ? 1 : 454);
                     double treats = (measurement.treats ?? 0) / (metric ? 1 : 454);
 
-                    bars[model.selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays] = BarChartGroupData(
-                      x: model.selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays,
+                    bars[selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays] = BarChartGroupData(
+                      x: selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays,
                       barRods: [
                         BarChartRodData(
                           y: eaten + treats,
@@ -118,10 +121,10 @@ class FoodEatenChart extends StatelessWidget{
                                 return const TextStyle(fontSize: 10);
                               },
                               rotateAngle: 0,
-                              interval: model.selectedDateRange.verticalInterval,
+                              interval: selectedDateRange.verticalInterval,
                               getTitles: (value) {
                                 return MaterialLocalizations.of(context).formatShortMonthDay(
-                                      DateTime.now().subtract(Duration(days: model.selectedDateRange.duration.inDays - value.toInt())),
+                                      DateTime.now().subtract(Duration(days: selectedDateRange.duration.inDays - value.toInt())),
                                     );
                               },
                             )),
