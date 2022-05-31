@@ -9,29 +9,32 @@ import 'package:weight_charts/models/measurement/measurement.dart';
 import 'chart_holder.dart';
 
 class AverageWeeklyWeightLossChart extends StatelessWidget {
-  final double sideLength;
+  final double maxWidth;
+  final double? maxHeight;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
   final Color dotColor;
   final double? currentWeight;
   final DateRange selectedDateRange;
-  final Function(String, Chart) onExpand;
+  final Function(String?, Chart?) onExpand;
+  final bool popup;
 
   const AverageWeeklyWeightLossChart({
     Key? key,
-    required this.sideLength,
+    required this.maxWidth,
     required this.stream,
     required this.color,
     required this.dotColor,
     required this.selectedDateRange,
     required this.currentWeight,
-    required this.onExpand,
+    required this.onExpand, required this.maxHeight, required this.popup,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
       type: Chart.awwl,
+      popup: popup,
       title: 'Average Weekly Weight Loss %',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,
@@ -260,7 +263,8 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
           }),
-      sideLength: sideLength,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
       color: color,
       onExpand: (title, chart) => onExpand(title,chart),
     );

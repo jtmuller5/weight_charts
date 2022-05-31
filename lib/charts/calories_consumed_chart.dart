@@ -7,26 +7,32 @@ import '../models/date_range.dart';
 import '../models/measurement/measurement.dart';
 
 class CaloriesConsumedChart extends StatelessWidget {
-  final double sideLength;
+  final double maxWidth;
+  final double? maxHeight;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
   final Color dotColor;
   final DateRange selectedDateRange;
-  final Function(String, Chart) onExpand;
+  final Function(String?, Chart?) onExpand;
+  final bool popup;
 
   const CaloriesConsumedChart({
     Key? key,
-    required this.sideLength,
     required this.stream,
     required this.color,
     required this.dotColor,
-    required this.selectedDateRange, required this.onExpand,
+    required this.selectedDateRange,
+    required this.onExpand,
+    required this.maxWidth,
+    this.maxHeight,
+    required this.popup,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
       type: Chart.calories,
+
       title: 'Calories Consumed',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,
@@ -148,9 +154,11 @@ class CaloriesConsumedChart extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
           }),
-      sideLength: sideLength,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
       color: color,
-      onExpand: (title, chart) => onExpand(title,chart),
+      popup: popup,
+      onExpand: (title, chart) => onExpand(title, chart),
     );
   }
 }

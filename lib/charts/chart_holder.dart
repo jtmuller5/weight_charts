@@ -6,18 +6,22 @@ class ChartHolder extends StatelessWidget {
     Key? key,
     required this.title,
     required this.chart,
-    required this.sideLength,
+    required this.maxWidth,
     required this.color,
     required this.onExpand,
     required this.type,
+    this.maxHeight = 200,
+    this.popup = false,
   }) : super(key: key);
 
   final String title;
   final Widget chart;
-  final double sideLength;
+  final double maxWidth;
+  final double? maxHeight;
   final Color color;
-  final Function(String, Chart) onExpand;
+  final Function(String?, Chart?) onExpand;
   final Chart type;
+  final bool popup;
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +55,20 @@ class ChartHolder extends StatelessWidget {
                   Positioned(
                     right: 16,
                     top: 0,
-                    child: IconButton(
-                      iconSize: 16,
-                      constraints: const BoxConstraints(maxHeight: 24, maxWidth: 24),
-                      onPressed: () {
-                        onExpand(title, type);
-                      },
-                      icon: const Icon(Icons.open_in_full),
-                    ),
+                    child: popup
+                        ? CloseButton(
+                            onPressed: () {
+                              onExpand(null, null);
+                            },
+                          )
+                        : IconButton(
+                            iconSize: 16,
+                            constraints: const BoxConstraints(maxHeight: 24, maxWidth: 24),
+                            onPressed: () {
+                              onExpand(title, type);
+                            },
+                            icon: const Icon(Icons.open_in_full),
+                          ),
                   )
                 ],
               ),
@@ -68,8 +78,8 @@ class ChartHolder extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 200,
-                maxWidth: sideLength,
+                maxHeight: maxHeight ?? 200,
+                maxWidth: maxWidth,
               ),
               child: chart,
             ),

@@ -7,33 +7,36 @@ import 'package:weight_charts/models/json_utilities.dart';
 import 'package:weight_charts/models/measurement/measurement.dart';
 
 class WeightTrendChart extends StatelessWidget {
-  final double sideLength;
+  final double maxWidth;
+  final double? maxHeight;
   final double? targetWeight;
   final bool metric;
   final Color color;
   final Color dotColor;
   final DateRange selectedDateRange;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
-  final Function(String, Chart) onExpand;
+  final Function(String?, Chart?) onExpand;
+  final bool popup;
 
   const WeightTrendChart({
     Key? key,
-    required this.sideLength,
     required this.targetWeight,
     required this.stream,
     required this.metric,
     required this.color,
     required this.selectedDateRange,
     required this.dotColor,
-    required this.onExpand,
+    required this.onExpand, required this.maxWidth, this.maxHeight, required this.popup,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
       type: Chart.weight,
+      popup: popup,
       title: 'Home Weight Trend (${metric ? 'kg' : 'lbs'})',
-      sideLength: sideLength,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,
           builder: (context, snapshot) {

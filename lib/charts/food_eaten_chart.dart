@@ -7,27 +7,29 @@ import 'package:weight_charts/models/date_range.dart';
 import '../models/measurement/measurement.dart';
 
 class FoodEatenChart extends StatelessWidget {
-  final double sideLength;
+  final double maxWidth;
+  final double? maxHeight;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
   final Color dotColor;
   final DateRange selectedDateRange;
-  final Function(String, Chart) onExpand;
+  final Function(String?, Chart?) onExpand;
+  final bool popup;
 
   const FoodEatenChart({
     Key? key,
-    required this.sideLength,
     required this.stream,
     required this.color,
     required this.dotColor,
     required this.selectedDateRange,
-    required this.onExpand,
+    required this.onExpand, required this.maxWidth, this.maxHeight, required this.popup,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
       type: Chart.food,
+      popup: popup,
       title: 'Food Eaten (g)/Treats Fed (g)',
       //'Food Eaten (${model.metric ? 'g' : 'lbs'})/Treats Fed (${model.metric ? 'g' : 'lbs'})',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -142,7 +144,8 @@ class FoodEatenChart extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
           }),
-      sideLength: sideLength,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
       color: color,
       onExpand: (title, chart) => onExpand(title,chart),
     );
