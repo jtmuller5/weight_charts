@@ -12,7 +12,7 @@ class CaloriesConsumedChart extends StatelessWidget {
   final Color color;
   final Color dotColor;
   final DateRange selectedDateRange;
-  final Function(String, Widget) onExpand;
+  final Function(String, Chart) onExpand;
 
   const CaloriesConsumedChart({
     Key? key,

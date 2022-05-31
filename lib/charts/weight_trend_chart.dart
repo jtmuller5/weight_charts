@@ -14,7 +14,7 @@ class WeightTrendChart extends StatelessWidget {
   final Color dotColor;
   final DateRange selectedDateRange;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
-  final Function(String, Widget) onExpand;
+  final Function(String, Chart) onExpand;
 
   const WeightTrendChart({
     Key? key,
@@ -24,7 +24,8 @@ class WeightTrendChart extends StatelessWidget {
     required this.metric,
     required this.color,
     required this.selectedDateRange,
-    required this.dotColor, required this.onExpand,
+    required this.dotColor,
+    required this.onExpand,
   }) : super(key: key);
 
   @override
@@ -175,7 +176,7 @@ class WeightTrendChart extends StatelessWidget {
             }
           }),
       color: color,
-      onExpand: (title, chart) => onExpand(title,chart),
+      onExpand: (title, chart) => onExpand(title, chart),
     );
   }
 }

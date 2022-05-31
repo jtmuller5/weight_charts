@@ -15,7 +15,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
   final Color dotColor;
   final double? currentWeight;
   final DateRange selectedDateRange;
-  final Function(String, Widget) onExpand;
+  final Function(String, Chart) onExpand;
 
   const AverageWeeklyWeightLossChart({
     Key? key,
