@@ -27,6 +27,7 @@ class FoodEatenChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
+      type: Chart.food,
       title: 'Food Eaten (g)/Treats Fed (g)',
       //'Food Eaten (${model.metric ? 'g' : 'lbs'})/Treats Fed (${model.metric ? 'g' : 'lbs'})',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(

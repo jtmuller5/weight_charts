@@ -31,6 +31,7 @@ class WeightTrendChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
+      type: Chart.weight,
       title: 'Home Weight Trend (${metric ? 'kg' : 'lbs'})',
       sideLength: sideLength,
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(

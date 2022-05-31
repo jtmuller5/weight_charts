@@ -9,6 +9,7 @@ class ChartHolder extends StatelessWidget {
     required this.sideLength,
     required this.color,
     required this.onExpand,
+    required this.type,
   }) : super(key: key);
 
   final String title;
@@ -16,6 +17,7 @@ class ChartHolder extends StatelessWidget {
   final double sideLength;
   final Color color;
   final Function(String, Chart) onExpand;
+  final Chart type;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class ChartHolder extends StatelessWidget {
                       iconSize: 16,
                       constraints: const BoxConstraints(maxHeight: 24, maxWidth: 24),
                       onPressed: () {
-                        onExpand(title, Chart.awwl);
+                        onExpand(title, type);
                       },
                       icon: const Icon(Icons.open_in_full),
                     ),
@@ -95,6 +97,5 @@ LineChartBarData getReferenceLine({
     dotData: FlDotData(show: false),
   );
 }
-
 
 enum Chart { awwl, weight, calories, food }

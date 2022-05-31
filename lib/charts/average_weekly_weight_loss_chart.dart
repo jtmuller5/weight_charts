@@ -31,6 +31,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
+      type: Chart.awwl,
       title: 'Average Weekly Weight Loss %',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,

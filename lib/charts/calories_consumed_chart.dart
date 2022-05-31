@@ -26,6 +26,7 @@ class CaloriesConsumedChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
+      type: Chart.calories,
       title: 'Calories Consumed',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,
