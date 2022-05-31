@@ -13,8 +13,9 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
   final Color dotColor;
-  final double currentWeight;
+  final double? currentWeight;
   final DateRange selectedDateRange;
+  final Function(String, Widget) onExpand;
 
   const AverageWeeklyWeightLossChart({
     Key? key,
@@ -24,6 +25,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
     required this.dotColor,
     required this.selectedDateRange,
     required this.currentWeight,
+    required this.onExpand,
   }) : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,
           builder: (context, snapshot) {
-            debugPrint('snapshot: ' + snapshot.connectionState.toString());
+            debugPrint('snapshot: ${snapshot.connectionState}');
             if (snapshot.hasData) {
               List<Measurement> allMeasurements = snapshot.data?.docs.map((e) => Measurement.fromJson(e.data())).toList() ?? [];
               List<Measurement> rawMeasurements = allMeasurements
@@ -67,7 +69,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
               }
 
               /// 2 - Calculate AWWL for each day
-              double rollingWeight = currentWeight!;
+              double rollingWeight = currentWeight ?? 0;
               List<Measurement?> reversedMeasurements = measurements.entries.toList().reversed.map((e) => e.value).toList();
 
               /// 2.a - cycle through all days in reverse order (current -> past)
@@ -117,7 +119,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
 
                   index++;
                 } catch (e) {
-                  debugPrint('Error with awwl: ' + e.toString());
+                  debugPrint('Error with awwl: $e');
                 }
               });
 
@@ -259,7 +261,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
           }),
       sideLength: sideLength,
       color: color,
-      onExpand: (title, chart) {},
+      onExpand: (title, chart) => onExpand(title,chart),
     );
   }
 }

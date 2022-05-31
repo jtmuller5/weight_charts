@@ -7,7 +7,8 @@ class ChartHolder extends StatelessWidget {
     required this.title,
     required this.chart,
     required this.sideLength,
-    required this.color, required this.onExpand,
+    required this.color,
+    required this.onExpand,
   }) : super(key: key);
 
   final String title;
@@ -62,7 +63,7 @@ class ChartHolder extends StatelessWidget {
             ),
           ),
           Padding(
-            padding:const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 200,
@@ -76,7 +77,6 @@ class ChartHolder extends StatelessWidget {
     );
   }
 }
-
 
 LineChartBarData getReferenceLine({
   required double startX,
