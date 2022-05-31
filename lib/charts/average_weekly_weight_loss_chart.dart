@@ -10,7 +10,7 @@ import 'chart_holder.dart';
 
 class AverageWeeklyWeightLossChart extends StatelessWidget {
   final double maxWidth;
-  final double? maxHeight;
+  final double maxHeight;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
   final Color dotColor;
@@ -27,7 +27,9 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
     required this.dotColor,
     required this.selectedDateRange,
     required this.currentWeight,
-    required this.onExpand, required this.maxHeight, required this.popup,
+    required this.onExpand,
+    this.maxHeight = 200,
+    this.popup = false,
   }) : super(key: key);
 
   @override
@@ -266,7 +268,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
       maxWidth: maxWidth,
       maxHeight: maxHeight,
       color: color,
-      onExpand: (title, chart) => onExpand(title,chart),
+      onExpand: (title, chart) => onExpand(title, chart),
     );
   }
 }

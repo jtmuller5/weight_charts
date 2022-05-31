@@ -8,7 +8,7 @@ import 'package:weight_charts/models/measurement/measurement.dart';
 
 class WeightTrendChart extends StatelessWidget {
   final double maxWidth;
-  final double? maxHeight;
+  final double maxHeight;
   final double? targetWeight;
   final bool metric;
   final Color color;
@@ -26,7 +26,10 @@ class WeightTrendChart extends StatelessWidget {
     required this.color,
     required this.selectedDateRange,
     required this.dotColor,
-    required this.onExpand, required this.maxWidth, this.maxHeight, required this.popup,
+    required this.onExpand,
+    required this.maxWidth,
+    this.maxHeight = 200,
+    this.popup = false,
   }) : super(key: key);
 
   @override

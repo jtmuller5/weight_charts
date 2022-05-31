@@ -22,7 +22,10 @@ class FoodEatenChart extends StatelessWidget {
     required this.color,
     required this.dotColor,
     required this.selectedDateRange,
-    required this.onExpand, required this.maxWidth, this.maxHeight, required this.popup,
+    required this.onExpand,
+    required this.maxWidth,
+    this.maxHeight = 200,
+    this.popup = false,
   }) : super(key: key);
 
   @override
@@ -147,7 +150,7 @@ class FoodEatenChart extends StatelessWidget {
       maxWidth: maxWidth,
       maxHeight: maxHeight,
       color: color,
-      onExpand: (title, chart) => onExpand(title,chart),
+      onExpand: (title, chart) => onExpand(title, chart),
     );
   }
 }

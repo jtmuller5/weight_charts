@@ -8,7 +8,7 @@ import '../models/measurement/measurement.dart';
 
 class CaloriesConsumedChart extends StatelessWidget {
   final double maxWidth;
-  final double? maxHeight;
+  final double maxHeight;
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Color color;
   final Color dotColor;
@@ -24,8 +24,8 @@ class CaloriesConsumedChart extends StatelessWidget {
     required this.selectedDateRange,
     required this.onExpand,
     required this.maxWidth,
-    this.maxHeight,
-    required this.popup,
+    this.maxHeight = 200,
+    this.popup = false,
   }) : super(key: key);
 
   @override
