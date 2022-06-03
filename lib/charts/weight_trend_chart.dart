@@ -17,6 +17,7 @@ class WeightTrendChart extends StatelessWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   final Function(String?, Chart?) onExpand;
   final bool popup;
+  final bool showExpand;
 
   const WeightTrendChart({
     Key? key,
@@ -29,7 +30,7 @@ class WeightTrendChart extends StatelessWidget {
     required this.onExpand,
     required this.maxWidth,
     this.maxHeight = 200,
-    this.popup = false,
+    this.popup = false, this.showExpand = true,
   }) : super(key: key);
 
   @override
@@ -37,6 +38,7 @@ class WeightTrendChart extends StatelessWidget {
     return ChartHolder(
       type: Chart.weight,
       popup: popup,
+      showExpand: showExpand,
       title: 'Home Weight Trend (${metric ? 'kg' : 'lbs'})',
       maxWidth: maxWidth,
       maxHeight: maxHeight,

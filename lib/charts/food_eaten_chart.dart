@@ -15,6 +15,8 @@ class FoodEatenChart extends StatelessWidget {
   final DateRange selectedDateRange;
   final Function(String?, Chart?) onExpand;
   final bool popup;
+  final bool showExpand;
+  final bool metric;
 
   const FoodEatenChart({
     Key? key,
@@ -26,20 +28,21 @@ class FoodEatenChart extends StatelessWidget {
     required this.maxWidth,
     this.maxHeight = 200,
     this.popup = false,
+    this.showExpand = true,
+    required this.metric,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChartHolder(
       type: Chart.food,
+      showExpand: showExpand,
       popup: popup,
       title: 'Food Eaten (g)/Treats Fed (g)',
       //'Food Eaten (${model.metric ? 'g' : 'lbs'})/Treats Fed (${model.metric ? 'g' : 'lbs'})',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,
           builder: (context, snapshot) {
-            bool metric = true;
-
             double maxFood = 0;
 
             if (snapshot.hasData) {
@@ -48,7 +51,6 @@ class FoodEatenChart extends StatelessWidget {
                   .where((measurement) =>
                       (measurement.dateTime != null && measurement.dateTime!.isAfter(DateTime.now().subtract(selectedDateRange.duration))))
                   .toList();
-              //if (rawMeasurements.isNotEmpty) {
               Map<int, BarChartGroupData> bars = {
                 for (var element in List.generate(
                   selectedDateRange.duration.inDays,
@@ -59,19 +61,14 @@ class FoodEatenChart extends StatelessWidget {
                     barRods: [
                       BarChartRodData(
                         y: 0,
-                        /*backDrawRodData: BackgroundBarChartRodData(
-                          y: metric ? 220 : .5,
-                          show: true,
-                          colors: [Colors.transparent],
-                        ),*/
                       )
                     ],
                   )
               };
 
               for (Measurement measurement in (rawMeasurements)) {
-                if (measurement.offered != null && measurement.notEaten != null && measurement.dateTime != null) {
-                  double eaten = (measurement.offered! - measurement.notEaten!) / (metric ? 1 : 454);
+                if (measurement.offered != null && measurement.dateTime != null) {
+                  double eaten = (measurement.offered! - (measurement.notEaten ?? 0)) / (metric ? 1 : 454);
                   double treats = (measurement.treats ?? 0) / (metric ? 1 : 454);
 
                   bars[selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays] = BarChartGroupData(
@@ -79,11 +76,6 @@ class FoodEatenChart extends StatelessWidget {
                     barRods: [
                       BarChartRodData(
                         y: eaten + treats,
-                        /*backDrawRodData: BackgroundBarChartRodData(
-                          y: metric ? 220 : .5,
-                          show: true,
-                          colors: [Colors.transparent],
-                        ),*/
                         rodStackItems: [
                           BarChartRodStackItem(0, eaten, color),
                           if (measurement.treats != null) BarChartRodStackItem(eaten, eaten + treats, Colors.redAccent),

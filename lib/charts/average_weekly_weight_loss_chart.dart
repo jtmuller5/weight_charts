@@ -18,6 +18,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
   final DateRange selectedDateRange;
   final Function(String?, Chart?) onExpand;
   final bool popup;
+  final bool showExpand;
 
   const AverageWeeklyWeightLossChart({
     Key? key,
@@ -30,6 +31,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
     required this.onExpand,
     this.maxHeight = 200,
     this.popup = false,
+    this.showExpand = true,
   }) : super(key: key);
 
   @override
@@ -37,6 +39,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
     return ChartHolder(
       type: Chart.awwl,
       popup: popup,
+      showExpand: showExpand,
       title: 'Average Weekly Weight Loss %',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,

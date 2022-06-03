@@ -15,6 +15,7 @@ class CaloriesConsumedChart extends StatelessWidget {
   final DateRange selectedDateRange;
   final Function(String?, Chart?) onExpand;
   final bool popup;
+  final bool showExpand;
 
   const CaloriesConsumedChart({
     Key? key,
@@ -25,7 +26,7 @@ class CaloriesConsumedChart extends StatelessWidget {
     required this.onExpand,
     required this.maxWidth,
     this.maxHeight = 200,
-    this.popup = false,
+    this.popup = false, this.showExpand = false,
   }) : super(key: key);
 
   @override
@@ -158,6 +159,7 @@ class CaloriesConsumedChart extends StatelessWidget {
       maxHeight: maxHeight,
       color: color,
       popup: popup,
+      showExpand: showExpand,
       onExpand: (title, chart) => onExpand(title, chart),
     );
   }

@@ -12,6 +12,7 @@ class ChartHolder extends StatelessWidget {
     required this.type,
     this.maxHeight = 200,
     this.popup = false,
+    this.showExpand = true,
   }) : super(key: key);
 
   final String title;
@@ -22,6 +23,7 @@ class ChartHolder extends StatelessWidget {
   final Function(String?, Chart?) onExpand;
   final Chart type;
   final bool popup;
+  final bool showExpand;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class ChartHolder extends StatelessWidget {
                           ),
                         ],
                       )),
-                  Positioned(
+                  if(showExpand)Positioned(
                     right: 16,
                     top: 0,
                     child: popup
