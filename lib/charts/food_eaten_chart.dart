@@ -92,7 +92,7 @@ class FoodEatenChart extends StatelessWidget {
                   child: BarChart(
                     BarChartData(
                       gridData: FlGridData(drawVerticalLine: true),
-                      barGroups: bars.values.toList(),
+                      barGroups:  [],//bars.values.toList(),
                       borderData: FlBorderData(
                         border: const Border(
                           left: BorderSide(
