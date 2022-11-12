@@ -66,7 +66,7 @@ class CaloriesConsumedChart extends StatelessWidget {
                 }
               }
 
-              if(spots.isNotEmpty) {
+              if(spots.isNotEmpty && mostCalories != 0) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 24.0),
                   child: LineChart(
