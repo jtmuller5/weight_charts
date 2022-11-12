@@ -66,91 +66,95 @@ class CaloriesConsumedChart extends StatelessWidget {
                 }
               }
 
-              return Padding(
-                padding: const EdgeInsets.only(right: 24.0),
-                child: LineChart(
-                  LineChartData(
-                      minY: 0,
-                      minX: -selectedDateRange.duration.inDays.toDouble(),
-                      maxY: mostCalories + 5,
-                      maxX: 0,
-                      lineTouchData: LineTouchData(),
-                      borderData: FlBorderData(
-                        border: const Border(
-                          left: BorderSide(
-                            width: 1,
-                            color: Colors.black54,
+              if(spots.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 24.0),
+                  child: LineChart(
+                    LineChartData(
+                        minY: 0,
+                        minX: -selectedDateRange.duration.inDays.toDouble(),
+                        maxY: mostCalories + 5,
+                        maxX: 0,
+                        lineTouchData: LineTouchData(),
+                        borderData: FlBorderData(
+                          border: const Border(
+                            left: BorderSide(
+                              width: 1,
+                              color: Colors.black54,
+                            ),
+                            bottom: BorderSide(
+                              width: 1,
+                              color: Colors.black54,
+                            ),
                           ),
-                          bottom: BorderSide(
-                            width: 1,
-                            color: Colors.black54,
-                          ),
+                          show: true,
                         ),
-                        show: true,
-                      ),
-                      titlesData: FlTitlesData(
-                          rightTitles: SideTitles(showTitles: false),
-                          topTitles: SideTitles(showTitles: false),
-                          leftTitles: SideTitles(
-                            interval: (mostCalories / 6) == 0 ? 1 : (mostCalories / 6),
-                            showTitles: true,
-                            reservedSize: 24,
-                            getTextStyles: (context, value) {
-                              return const TextStyle(fontSize: 10);
-                            },
-                            getTitles: (value) {
-                              return value.toStringAsFixed(0);
-                            },
-                          ),
-                          bottomTitles: SideTitles(
-                            reservedSize: 0,
-                            showTitles: true,
-                            getTextStyles: (context, value) {
-                              return const TextStyle(fontSize: 10);
-                            },
-                            rotateAngle: 0,
-                            interval: selectedDateRange.verticalInterval,
-                            getTitles: (value) {
-                              return MaterialLocalizations.of(context).formatShortMonthDay(DateTime.now().add(Duration(days: value.toInt())));
-                            },
-                          )),
-                      gridData: FlGridData(
-                        drawHorizontalLine: true,
-                        horizontalInterval: (mostCalories / 6) == 0 ? 1 : (mostCalories / 6),
-                        verticalInterval: selectedDateRange.verticalInterval,
-                        drawVerticalLine: true,
-                        getDrawingHorizontalLine: (value) {
-                          return FlLine(strokeWidth: .2);
-                        },
-                        getDrawingVerticalLine: (value) {
-                          return FlLine(strokeWidth: .2);
-                        },
-                        checkToShowHorizontalLine: (value) {
-                          return true;
-                        },
-                      ),
-                      lineBarsData: [
-                        getReferenceLine(startX: -selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.transparent, y: 0),
-                        if (spots.length > 1)
-                          LineChartBarData(
-                              spots: spots,
-                              barWidth: 1,
-                              colors: [dotColor],
-                              dotData: FlDotData(
-                                getDotPainter: (spot, value, barData, index) {
-                                  return FlDotCirclePainter(
-                                    color: dotColor,
-                                    strokeWidth: 0,
-                                    radius: 3,
-                                    strokeColor: dotColor,
-                                  );
-                                },
-                              )),
-                      ]),
-                  swapAnimationDuration: const Duration(milliseconds: 150), // Optional
-                  swapAnimationCurve: Curves.linear, // Optional
-                ),
-              );
+                        titlesData: FlTitlesData(
+                            rightTitles: SideTitles(showTitles: false),
+                            topTitles: SideTitles(showTitles: false),
+                            leftTitles: SideTitles(
+                              interval: (mostCalories / 6) == 0 ? 1 : (mostCalories / 6),
+                              showTitles: true,
+                              reservedSize: 24,
+                              getTextStyles: (context, value) {
+                                return const TextStyle(fontSize: 10);
+                              },
+                              getTitles: (value) {
+                                return value.toStringAsFixed(0);
+                              },
+                            ),
+                            bottomTitles: SideTitles(
+                              reservedSize: 0,
+                              showTitles: true,
+                              getTextStyles: (context, value) {
+                                return const TextStyle(fontSize: 10);
+                              },
+                              rotateAngle: 0,
+                              interval: selectedDateRange.verticalInterval,
+                              getTitles: (value) {
+                                return MaterialLocalizations.of(context).formatShortMonthDay(DateTime.now().add(Duration(days: value.toInt())));
+                              },
+                            )),
+                        gridData: FlGridData(
+                          drawHorizontalLine: true,
+                          horizontalInterval: (mostCalories / 6) == 0 ? 1 : (mostCalories / 6),
+                          verticalInterval: selectedDateRange.verticalInterval,
+                          drawVerticalLine: true,
+                          getDrawingHorizontalLine: (value) {
+                            return FlLine(strokeWidth: .2);
+                          },
+                          getDrawingVerticalLine: (value) {
+                            return FlLine(strokeWidth: .2);
+                          },
+                          checkToShowHorizontalLine: (value) {
+                            return true;
+                          },
+                        ),
+                        lineBarsData: [
+                          getReferenceLine(startX: -selectedDateRange.duration.inDays.toDouble(), endX: 0, color: Colors.transparent, y: 0),
+                          if (spots.length > 1)
+                            LineChartBarData(
+                                spots: spots,
+                                barWidth: 1,
+                                colors: [dotColor],
+                                dotData: FlDotData(
+                                  getDotPainter: (spot, value, barData, index) {
+                                    return FlDotCirclePainter(
+                                      color: dotColor,
+                                      strokeWidth: 0,
+                                      radius: 3,
+                                      strokeColor: dotColor,
+                                    );
+                                  },
+                                )),
+                        ]),
+                    swapAnimationDuration: const Duration(milliseconds: 150), // Optional
+                    swapAnimationCurve: Curves.linear, // Optional
+                  ),
+                );
+              } else{
+                return Container();
+              }
             } else {
               return const Center(child: CircularProgressIndicator());
             }
