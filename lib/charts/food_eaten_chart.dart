@@ -71,18 +71,20 @@ class FoodEatenChart extends StatelessWidget {
                   double eaten = (measurement.offered! - (measurement.notEaten ?? 0)) / (metric ? 1 : 454);
                   double treats = (measurement.treats ?? 0) / (metric ? 1 : 454);
 
-                  bars[selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays] = BarChartGroupData(
-                    x: selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays,
-                    barRods: [
-                      BarChartRodData(
-                        y: eaten + treats,
-                        rodStackItems: [
-                          BarChartRodStackItem(0, eaten, color),
-                          if (measurement.treats != null) BarChartRodStackItem(eaten, eaten + treats, Colors.redAccent),
-                        ],
-                      )
-                    ],
-                  );
+                  if(eaten != 0) {
+                    bars[selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays] = BarChartGroupData(
+                      x: selectedDateRange.duration.inDays + measurement.dateTime!.difference(DateTime.now()).inDays,
+                      barRods: [
+                        BarChartRodData(
+                          y: eaten + treats,
+                          rodStackItems: [
+                            BarChartRodStackItem(0, eaten, color),
+                            if (measurement.treats != null) BarChartRodStackItem(eaten, eaten + treats, Colors.redAccent),
+                          ],
+                        )
+                      ],
+                    );
+                  }
                 }
               }
               return Padding(
