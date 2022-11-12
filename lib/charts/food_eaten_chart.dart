@@ -38,7 +38,7 @@ class FoodEatenChart extends StatelessWidget {
       type: Chart.food,
       showExpand: showExpand,
       popup: popup,
-      title: 'Food Eaten (g)/Treats Fed (g)',
+      title: 'Food Frwfrwg (g)/Treats Fed (g)',
       //'Food Eaten (${model.metric ? 'g' : 'lbs'})/Treats Fed (${model.metric ? 'g' : 'lbs'})',
       chart: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: stream,
