@@ -153,7 +153,9 @@ class CaloriesConsumedChart extends StatelessWidget {
                   ),
                 );
               } else{
-                return Container();
+                return Center(
+                  child: Text('No data'),
+                );
               }
             } else {
               return const Center(child: CircularProgressIndicator());
