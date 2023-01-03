@@ -27,6 +27,8 @@ Measurement _$MeasurementFromJson(Map<String, dynamic> json) => Measurement(
       bcsCalc: (json['bcsCalc'] as num?)?.toDouble(),
       lastUpdated: getDateFromTimestamp(json['lastUpdated'] as Timestamp?),
       lastUpdateUser: json['lastUpdateUser'] as String?,
+      foodUnits: json['foodUnits'] as String?,
+      caloriesPerCup: (json['caloriesPerCup'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$MeasurementToJson(Measurement instance) =>
@@ -41,6 +43,8 @@ Map<String, dynamic> _$MeasurementToJson(Measurement instance) =>
       'notEaten': instance.notEaten,
       'treats': instance.treats,
       'foodType': instance.foodType,
+      'caloriesPerCup': instance.caloriesPerCup,
+      'foodUnits': instance.foodUnits,
       'exerciseMins': instance.exerciseMins,
       'exerciseIntensity': _$IntensityEnumMap[instance.exerciseIntensity],
       'notes': instance.notes,

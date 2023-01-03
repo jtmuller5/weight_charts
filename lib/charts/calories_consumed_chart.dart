@@ -51,9 +51,26 @@ class CaloriesConsumedChart extends StatelessWidget {
 
               for (Measurement measurement in rawMeasurements) {
                 if (measurement.offered != null) {
-                  double eaten = (measurement.offered! - (measurement.notEaten ?? 0));
-                  double treats = ((measurement.treats ?? 0) * 1);
-                  double calories = (eaten * 3.237) + (treats * 8.5);
+
+                  double eaten;
+                  double treats;
+                  double calories;
+
+                  if(measurement.foodUnits == null){
+                    eaten = (measurement.offered! - (measurement.notEaten ?? 0));
+                    treats = ((measurement.treats ?? 0) * 1);
+                    calories = double.parse(((eaten * 3.237) + (treats * 8.5)).toStringAsFixed(2));
+                  } else{
+                    if(measurement.foodUnits == 'cups'){
+                      eaten = ((measurement.offered! * (measurement.caloriesPerCup ?? 200)) - ((measurement.notEaten ?? 0) * (measurement.caloriesPerCup ?? 200)));
+                      treats = ((measurement.treats ?? 0) * 1);
+                      calories = double.parse(((eaten * 3.237) + (treats * 8.5)).toStringAsFixed(2));
+                    } else{
+                      eaten = (measurement.offered! - (measurement.notEaten ?? 0));
+                      treats = ((measurement.treats ?? 0) * 1);
+                      calories = double.parse(((eaten * 3.237) + (treats * 8.5)).toStringAsFixed(2));
+                    }
+                  }
 
                   spots.add(
                     FlSpot(

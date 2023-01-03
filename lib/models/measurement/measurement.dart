@@ -32,6 +32,10 @@ class Measurement {
   
   String? foodType;
 
+  double? caloriesPerCup;
+
+  String? foodUnits;
+
   int? exerciseMins;
 
   Intensity? exerciseIntensity;
@@ -71,6 +75,8 @@ class Measurement {
     this.bcsCalc,
     this.lastUpdated,
     this.lastUpdateUser,
+    this.foodUnits,
+    this.caloriesPerCup,
   });
 
   factory Measurement.fromJson(Map<String, dynamic> json) => _$MeasurementFromJson(json);
