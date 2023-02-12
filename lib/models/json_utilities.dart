@@ -40,19 +40,35 @@ double? getWeightForDisplay(double? weight, {bool imperial = true}) {
   return null;
 }
 
-Color getDotColor(double value){
-  if(value>= 3){
-    return Colors.brown;
-  } else if(value >=2){
-    return Colors.red;
-  } else if(value >=1.5){
-    return Colors.orange;
-  }else if(value>= .5){
-    return Colors.green;
-  } else if(value >= 0){
-    return Colors.orange;
-  } else if(value >= -1){
-    return Colors.yellow;
+Color getDotColor(double value, bool losingWeight) {
+  if (losingWeight) {
+    if (value >= 3) {
+      return Colors.brown;
+    } else if (value >= 2) {
+      return Colors.red;
+    } else if (value >= 1.5) {
+      return Colors.orange;
+    } else if (value >= .5) {
+      return Colors.green;
+    } else if (value >= 0) {
+      return Colors.orange;
+    } else if (value >= -1) {
+      return Colors.yellow;
+    }
+  } else {
+    if (value >= 3) {
+      return Colors.yellow;
+    } else if (value >= 2) {
+      return Colors.orange;
+    } else if (value >= 1.5) {
+      return Colors.green;
+    } else if (value >= .5) {
+      return Colors.orange;
+    } else if (value >= 0) {
+      return Colors.red;
+    } else if (value >= -1) {
+      return Colors.brown;
+    }
   }
 
   return Colors.black;

@@ -19,6 +19,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
   final Function(String?, Chart?) onExpand;
   final bool popup;
   final bool showExpand;
+  final bool losingWeight = true;
 
   const AverageWeeklyWeightLossChart({
     Key? key,
@@ -148,7 +149,7 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
                                 getDotPainter: (p0, p1, p2, p3) {
                                   return FlDotCirclePainter(
                                     radius: 5,
-                                    color: getDotColor(p0.y),
+                                    color: getDotColor(p0.y, losingWeight),
                                   );
                                 },
                               ))
@@ -251,10 +252,10 @@ class AverageWeeklyWeightLossChart extends StatelessWidget {
                           dotData: FlDotData(
                             getDotPainter: (spot, value, barData, index) {
                               return FlDotCirclePainter(
-                                color: getDotColor(spot.y),
+                                color: getDotColor(spot.y, losingWeight),
                                 strokeWidth: 0,
                                 radius: 3,
-                                strokeColor: getDotColor(spot.y),
+                                strokeColor: getDotColor(spot.y, losingWeight),
                               );
                             },
                           ),
